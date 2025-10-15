@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TVShowsView: View {
-    let url = URL(string: "https://picsum.photos/1200")
+    @State private var showsViewModel = TVShowsViewModel()
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -10,14 +10,36 @@ struct TVShowsView: View {
                 CategoriesOptions()
 
                 GroupOfMoviesTitle(title: "Latest Shows", subTitle: "View all")
-                HorizontalMoviesList(url: url)
+                HorizontalMoviesList(
+                    loadableState: $showsViewModel.latestShowsState,
+                    initailRequest: {
+                        await showsViewModel.getLatestShows()
+                    }
+                )
+                .task {
+                    await showsViewModel.getLatestShows()
+                }
 
                 GroupOfMoviesTitle(title: "Top Shows", subTitle: "View all")
-                HorizontalMoviesList(url: url)
-
+                HorizontalMoviesList(
+                    loadableState: $showsViewModel.topRatedShowsState,
+                    initailRequest: {
+                        await showsViewModel.getTopRatedShows()
+                    }
+                )
+                .task {
+                    await showsViewModel.getTopRatedShows()
+                }
                 GroupOfMoviesTitle(title: "Popular Shows", subTitle: "View all")
-                HorizontalMoviesList(url: url)
-
+                HorizontalMoviesList(
+                    loadableState: $showsViewModel.popularShowsState,
+                    initailRequest: {
+                        await showsViewModel.getPopularShows()
+                    }
+                )
+                .task {
+                    await showsViewModel.getPopularShows()
+                }
             }
         }
 
